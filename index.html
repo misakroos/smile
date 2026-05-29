@@ -1,124 +1,436 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Venice AI</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { background: #0a0a0a; }
-    .chat-container { max-width: 800px; margin: auto; height: 90vh; display: flex; flex-direction: column; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Venice Image Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a25;
+    --border: #2a2a3a;
+    --accent: #7c6dfa;
+    --accent2: #fa6d8a;
+    --text: #e8e8f0;
+    --muted: #6b6b88;
+    --success: #4ade80;
+    --warn: #f59e0b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; min-height: 100vh; overflow-x: hidden; }
+
+  /* LOGIN */
+  #login-screen {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100vh; background: radial-gradient(ellipse at 50% 0%, #1e1040 0%, var(--bg) 70%);
+  }
+  .login-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 48px 40px; width: 360px; box-shadow: 0 0 60px rgba(124,109,250,.15); }
+  .login-logo { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; margin-bottom: 8px; }
+  .login-sub { text-align: center; color: var(--muted); font-size: 12px; margin-bottom: 36px; }
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+  .field input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 14px; outline: none; transition: border-color .2s; }
+  .field input:focus { border-color: var(--accent); }
+  .btn-login { width: 100%; padding: 13px; background: linear-gradient(135deg, var(--accent), #5b4de0); border: none; border-radius: 8px; color: #fff; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: opacity .2s, transform .1s; }
+  .btn-login:hover { opacity: .9; transform: translateY(-1px); }
+  .login-error { color: var(--accent2); font-size: 12px; margin-top: 10px; text-align: center; display: none; }
+
+  /* APP */
+  #app { display: none; min-height: 100vh; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 28px; border-bottom: 1px solid var(--border); background: var(--surface); position: sticky; top: 0; z-index: 100; }
+  .topbar-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .btn-logout { background: none; border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-family: 'DM Mono', monospace; transition: all .2s; }
+  .btn-logout:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  .layout { display: flex; height: calc(100vh - 53px); }
+
+  /* SIDEBAR */
+  .sidebar { width: 300px; min-width: 300px; background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+  .sidebar h3 { font-family: 'Syne', sans-serif; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; }
+  .form-group select, .form-group textarea { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 12px; padding: 9px 12px; outline: none; transition: border-color .2s; width: 100%; }
+  .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); }
+  .form-group textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+  .model-badge { font-size: 9px; padding: 2px 6px; border-radius: 10px; margin-left: 4px; font-weight: 600; }
+  .badge-uncensored { background: rgba(250,109,138,.15); color: var(--accent2); }
+  .badge-private { background: rgba(124,109,250,.15); color: var(--accent); }
+  .badge-sota { background: rgba(245,158,11,.15); color: var(--warn); }
+
+  input[type=range] { -webkit-appearance: none; height: 4px; border-radius: 2px; background: var(--border); padding: 0; cursor: pointer; width: 100%; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; }
+  .range-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .range-val { font-size: 12px; color: var(--accent); min-width: 28px; text-align: right; }
+
+  .count-pills { display: flex; gap: 8px; }
+  .pill { flex: 1; text-align: center; padding: 8px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; font-size: 14px; font-weight: 600; transition: all .2s; background: var(--surface2); font-family: 'Syne', sans-serif; }
+  .pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .pill:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+
+  .api-field input { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 12px; padding: 8px 12px; outline: none; width: 100%; }
+  .api-field input:focus { border-color: var(--accent); }
+
+  .btn-generate { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; border-radius: 10px; color: #fff; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity .2s, transform .1s; }
+  .btn-generate:hover:not(:disabled) { opacity: .9; transform: translateY(-1px); }
+  .btn-generate:disabled { opacity: .5; cursor: not-allowed; }
+  .btn-autoprompt { width: 100%; padding: 9px; background: var(--surface2); border: 1px solid var(--accent); border-radius: 8px; color: var(--accent); font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; transition: all .2s; }
+  .btn-autoprompt:hover { background: var(--accent); color: #fff; }
+
+  .divider { border: none; border-top: 1px solid var(--border); }
+
+  /* MAIN */
+  .main { flex: 1; overflow-y: auto; padding: 24px; }
+  .main-header { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+  .main-sub { color: var(--muted); font-size: 12px; margin-bottom: 24px; }
+  .images-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  .img-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; position: relative; transition: transform .2s, box-shadow .2s; }
+  .img-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(124,109,250,.2); }
+  .img-card img { width: 100%; display: block; }
+  .img-card .img-actions { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,.85)); padding: 30px 12px 12px; display: flex; gap: 8px; opacity: 0; transition: opacity .2s; }
+  .img-card:hover .img-actions { opacity: 1; }
+  .img-actions a, .img-actions button { flex: 1; text-align: center; padding: 7px; border-radius: 6px; font-size: 11px; cursor: pointer; font-family: 'DM Mono', monospace; text-decoration: none; border: none; }
+  .btn-dl { background: var(--accent); color: #fff; }
+  .btn-cp { background: var(--surface2); color: var(--text); }
+  .skeleton { background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 12px; aspect-ratio: 1; min-height: 260px; }
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+  .status-bar { margin-top: 16px; padding: 12px 16px; border-radius: 8px; font-size: 12px; display: none; }
+  .status-bar.info { background: rgba(124,109,250,.1); border: 1px solid rgba(124,109,250,.3); color: var(--accent); display: block; }
+  .status-bar.error { background: rgba(250,109,138,.1); border: 1px solid rgba(250,109,138,.3); color: var(--accent2); display: block; }
+  .status-bar.success { background: rgba(74,222,128,.1); border: 1px solid rgba(74,222,128,.3); color: var(--success); display: block; }
+  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; color: var(--muted); gap: 12px; text-align: center; }
+  .empty-icon { font-size: 48px; opacity: .3; }
+  .empty-state p { font-size: 13px; max-width: 280px; line-height: 1.6; }
+  .quick-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+  .qtag { font-size: 10px; padding: 3px 8px; border-radius: 20px; border: 1px solid var(--border); cursor: pointer; background: var(--surface2); color: var(--muted); transition: all .2s; }
+  .qtag:hover { border-color: var(--accent); color: var(--accent); }
+  ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* Model info tooltip */
+  .model-info { font-size: 10px; color: var(--muted); margin-top: 4px; padding: 6px 8px; background: var(--surface2); border-radius: 6px; border-left: 2px solid var(--accent); display: none; }
+  #model-select:focus + .model-info { display: block; }
+</style>
 </head>
-<body class="text-white min-h-screen flex items-center justify-center">
-  
-  <!-- Login -->
-  <div id="loginScreen" class="max-w-md w-full p-10 rounded-3xl border border-pink-500/30 bg-zinc-950">
-    <div class="text-center mb-8">
-      <h1 class="text-4xl font-bold text-pink-500">Venice AI</h1>
-      <p class="text-gray-400 mt-2">Acceso Privado</p>
-    </div>
-    <input id="username" type="text" placeholder="Usuario" class="w-full mb-4 bg-zinc-900 rounded-2xl px-6 py-4">
-    <input id="password" type="password" placeholder="Contraseña" class="w-full mb-6 bg-zinc-900 rounded-2xl px-6 py-4">
-    <button onclick="login()" class="w-full bg-pink-600 py-4 rounded-2xl font-semibold">Ingresar</button>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">⬡ VENICE GEN</div>
+    <div class="login-sub">Private · AI Image Generator</div>
+    <div class="field"><label>Usuario</label><input type="text" id="login-user" placeholder="usuario" autocomplete="off"></div>
+    <div class="field"><label>Contraseña</label><input type="password" id="login-pass" placeholder="••••••••"></div>
+    <button class="btn-login" onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="login-err">Credenciales incorrectas</div>
   </div>
+</div>
 
-  <!-- Chat -->
-  <div id="chatScreen" class="chat-container hidden flex-col h-screen">
-    <div class="text-center py-4 border-b border-gray-800">
-      <h1 class="text-2xl font-semibold">Venice AI</h1>
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-logo">⬡ VENICE GEN</div>
+    <button class="btn-logout" onclick="doLogout()">Salir</button>
+  </div>
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <div>
+        <h3>API Key Venice</h3>
+        <div class="api-field"><input type="password" id="api-key" placeholder="vapi_..."></div>
+      </div>
+
+      <hr class="divider">
+
+      <div>
+        <h3>Modelo</h3>
+        <div class="form-group">
+          <select id="model-select" onchange="updateModelInfo()">
+            <optgroup label="🌟 SOTA / High Quality">
+              <option value="grok-imagine-hq">Grok Imagine HQ (SOTA) — Privado</option>
+              <option value="flux-2-max">Flux 2 Max — Anon</option>
+              <option value="gpt-image-2">GPT Image 2 — Anon</option>
+              <option value="qwen-image-2">Qwen Image 2 Pro — Anon</option>
+            </optgroup>
+            <optgroup label="⚡ Rápidos / Generales">
+              <option value="grok-imagine">Grok Imagine — Privado</option>
+              <option value="nano-banana-2">Nano Banana 2 — Anon</option>
+              <option value="fluently-xl">Fluently XL — Rápido</option>
+              <option value="flux-dev">Flux Dev — Alta calidad</option>
+              <option value="venice-sd35">Venice SD 3.5</option>
+              <option value="hidream-i1-full">HiDream I1 Full</option>
+              <option value="qwen-image">Qwen Image</option>
+              <option value="seedream-v4-5">Seedream V4.5 — ByteDance</option>
+            </optgroup>
+            <optgroup label="🔓 Sin censura (Uncensored)">
+              <option value="flux-dev-uncensored">Flux Dev Uncensored</option>
+              <option value="lustify-v8">Lustify v8 — Sin censura · Privado</option>
+              <option value="lustify-sdxl">Lustify SDXL — Sin censura</option>
+              <option value="anime-wai">Anime (WAI) — Sin censura · Privado</option>
+              <option value="chroma">Chroma — Sin censura · Privado</option>
+              <option value="pony-realism">Pony Realism — Sin censura</option>
+            </optgroup>
+            <optgroup label="🎨 Artísticos / Especiales">
+              <option value="stable-diffusion-3.5">Stable Diffusion 3.5</option>
+              <option value="flux-realism">Flux Realism</option>
+              <option value="ideogram-v2">Ideogram v2</option>
+              <option value="z-image-turbo">Z-Image Turbo</option>
+            </optgroup>
+          </select>
+          <div class="model-info" id="model-info-box"></div>
+        </div>
+      </div>
+
+      <div>
+        <h3>Cantidad de imágenes</h3>
+        <div class="count-pills">
+          <div class="pill active" data-n="1" onclick="setCount(this)">1</div>
+          <div class="pill" data-n="2" onclick="setCount(this)">2</div>
+          <div class="pill" data-n="3" onclick="setCount(this)">3</div>
+          <div class="pill" data-n="4" onclick="setCount(this)">4</div>
+        </div>
+      </div>
+
+      <div>
+        <h3>Tamaño</h3>
+        <div class="form-group">
+          <select id="size-select">
+            <option value="1024x1024">1024 × 1024 — Cuadrado</option>
+            <option value="1024x1536">1024 × 1536 — Vertical</option>
+            <option value="1536x1024">1536 × 1024 — Horizontal</option>
+            <option value="768x1344">768 × 1344 — Portrait</option>
+            <option value="896x1152">896 × 1152 — Portrait M</option>
+            <option value="512x512">512 × 512 — Rápido</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <h3>Steps <span class="range-val" id="steps-val">30</span></h3>
+        <input type="range" id="steps" min="10" max="50" value="30" oninput="document.getElementById('steps-val').textContent=this.value">
+      </div>
+
+      <div>
+        <h3>CFG Scale <span class="range-val" id="cfg-val">7</span></h3>
+        <input type="range" id="cfg" min="1" max="20" value="7" step="0.5" oninput="document.getElementById('cfg-val').textContent=this.value">
+      </div>
+
+      <hr class="divider">
+
+      <div>
+        <h3>Prompt</h3>
+        <div class="form-group">
+          <textarea id="prompt" rows="5" placeholder="Describe la imagen que quieres generar..."></textarea>
+        </div>
+        <div class="quick-tags">
+          <span class="qtag" onclick="addTag('photorealistic')">photorealistic</span>
+          <span class="qtag" onclick="addTag('8k resolution')">8k</span>
+          <span class="qtag" onclick="addTag('cinematic lighting')">cinematic</span>
+          <span class="qtag" onclick="addTag('detailed')">detailed</span>
+          <span class="qtag" onclick="addTag('dramatic shadows')">shadows</span>
+          <span class="qtag" onclick="addTag('sharp focus')">sharp focus</span>
+          <span class="qtag" onclick="addTag('hyperrealistic')">hyperreal</span>
+          <span class="qtag" onclick="addTag('studio lighting')">studio</span>
+        </div>
+      </div>
+
+      <div>
+        <h3>Negative Prompt</h3>
+        <div class="form-group">
+          <textarea id="neg-prompt" rows="3" placeholder="Lo que NO quieres ver...">blurry, low quality, deformed, ugly, watermark, text</textarea>
+        </div>
+      </div>
+
+      <button class="btn-autoprompt" onclick="autoPrompt()">✦ Generar prompt automático</button>
+      <button class="btn-generate" id="gen-btn" onclick="generate()">Generar imágenes →</button>
+
     </div>
 
-    <div id="messages" class="flex-1 overflow-y-auto p-6 space-y-6"></div>
-
-    <div class="p-4 border-t border-gray-800">
-      <div class="flex gap-3">
-        <input id="promptInput" type="text" class="flex-1 bg-zinc-900 rounded-full px-6 py-4" 
-               placeholder="Describe lo que quieres generar..." onkeypress="if(event.key === 'Enter') generarImagen()">
-        <button onclick="generarImagen()" class="bg-pink-600 px-10 rounded-full font-medium">Generar</button>
+    <!-- MAIN -->
+    <div class="main">
+      <div class="main-header">Generador de Imágenes</div>
+      <div class="main-sub">Venice AI · 20+ modelos disponibles · Privado · Sin retención de datos</div>
+      <div id="status" class="status-bar"></div>
+      <div id="images-grid" class="images-grid">
+        <div class="empty-state">
+          <div class="empty-icon">◈</div>
+          <p>Elige un modelo, escribe tu prompt y genera hasta 4 imágenes</p>
+        </div>
       </div>
     </div>
   </div>
+</div>
 
-  <script>
-    const API_KEY = "VENICE_ADMIN_KEY_4OHVqVKfs0hOmWYTWzlzM3g6NbJtNO72RY1L3viahS";
-    const CORRECT_PASS = "43555938";
+<script>
+// AUTH
+function doLogin() {
+  const u = document.getElementById('login-user').value;
+  const p = document.getElementById('login-pass').value;
+  if (u === '4321' && p === '4321') {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+  }
+}
+document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+function doLogout() { document.getElementById('login-screen').style.display='flex'; document.getElementById('app').style.display='none'; }
 
-    function login() {
-      const user = document.getElementById('username').value.trim();
-      const pass = document.getElementById('password').value.trim();
-      if (user === CORRECT_PASS && pass === CORRECT_PASS) {
-        document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('chatScreen').classList.remove('hidden');
-        addMessage("Bienvenido. Describe lo que quieres generar.", false);
-      } else {
-        alert("Usuario o contraseña incorrectos");
+// MODEL INFO
+const modelDesc = {
+  'grok-imagine-hq': '🌟 Mejor calidad. Grok Imagine en modo alta resolución. Privado en Venice.',
+  'flux-2-max': '⚡ Flux 2 Max — Excelente estética y adherencia al prompt.',
+  'gpt-image-2': '🤖 GPT Image 2 de OpenAI vía proxy anónimo de Venice.',
+  'qwen-image-2': '🎯 Qwen Image 2 Pro de Alibaba — gran detalle y colores.',
+  'grok-imagine': '⚡ Grok Imagine estándar — rápido y privado.',
+  'nano-banana-2': '🍌 Nano Banana 2 (Gemini Flash Image) — rápido y versátil.',
+  'fluently-xl': '💨 Más rápido. Buena calidad general. Ideal para pruebas.',
+  'flux-dev': '🎨 Alta calidad. Detalles finos. Algo más lento.',
+  'venice-sd35': '🖼 Venice SD 3.5 — Stable Diffusion adaptado por Venice.',
+  'hidream-i1-full': '🌈 HiDream I1 — colores vibrantes y composición creativa.',
+  'qwen-image': '🔷 Qwen Image — velocidad alta, buenos resultados generales.',
+  'flux-dev-uncensored': '🔓 Sin filtros. Versión uncensored de Flux Dev.',
+  'lustify-v8': '🔓 Lustify v8 — Sin censura, última versión. Privado.',
+  'lustify-sdxl': '🔓 Lustify SDXL — Sin censura, estilo artístico expresivo.',
+  'anime-wai': '🔓 Anime (WAI) — estilo anime, sin censura. Privado.',
+  'chroma': '🔓 Chroma — Sin censura, colores ricos y saturados. Privado.',
+  'pony-realism': '🔓 Pony Realism — fotorrealismo sin censura.',
+  'stable-diffusion-3.5': '🎭 SD 3.5 estándar — amplia compatibilidad de estilos.',
+  'flux-realism': '📷 Flux Realism — especializado en fotorrealismo.',
+  'ideogram-v2': '✍️ Ideogram v2 — excelente para texto dentro de imágenes.',
+  'z-image-turbo': '⚡ Z-Image Turbo (Alibaba) — muy rápido, buena calidad.',
+  'seedream-v4-5': '🌸 Seedream V4.5 (ByteDance) — generación y edición de alta calidad, excelente detalle y coherencia.'
+};
+
+function updateModelInfo() {
+  const m = document.getElementById('model-select').value;
+  const box = document.getElementById('model-info-box');
+  box.textContent = modelDesc[m] || '';
+  box.style.display = modelDesc[m] ? 'block' : 'none';
+}
+updateModelInfo();
+
+// COUNT
+let imageCount = 1;
+function setCount(el) {
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  imageCount = parseInt(el.dataset.n);
+}
+
+// UTILS
+function addTag(tag) {
+  const el = document.getElementById('prompt');
+  el.value = el.value.trim() ? el.value.trim() + ', ' + tag : tag;
+}
+function setStatus(msg, type) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status-bar ' + type;
+}
+
+// AUTO PROMPT
+const autoPrompts = [
+  "A stunning mountain landscape at golden hour, dramatic clouds, photorealistic, 8k, cinematic lighting, ultra detailed",
+  "Portrait of a mysterious figure in neon-lit rainy city alley, cyberpunk atmosphere, reflections, detailed",
+  "Aerial view of misty forest at dawn, fog rolling through valleys, soft morning light, 8k photography",
+  "Close-up macro photograph of blooming flower with water droplets, bokeh background, sharp focus, studio lighting",
+  "Abstract geometric futuristic architecture, concrete and glass, dramatic shadows, editorial photography",
+  "Ocean sunset with silhouette of lone surfer, golden pink sky, photorealistic, high contrast",
+  "Dense tropical jungle with light shafts through canopy, lush greens, cinematic, hyperrealistic",
+  "Minimalist still life: coffee cup and book on wooden table, warm window light, moody atmosphere",
+  "Thunderstorm over vast desert, lightning strikes, dramatic clouds, epic scale, photorealistic",
+  "Ancient grand library interior, warm candlelight, floating dust motes, thousands of old books, mystical"
+];
+function autoPrompt() {
+  document.getElementById('prompt').value = autoPrompts[Math.floor(Math.random() * autoPrompts.length)];
+}
+
+// GENERATE
+async function generate() {
+  const apiKey = document.getElementById('api-key').value.trim();
+  const prompt = document.getElementById('prompt').value.trim();
+  if (!apiKey) { setStatus('⚠ Ingresa tu API key de Venice.ai', 'error'); return; }
+  if (!prompt) { setStatus('⚠ Escribe un prompt primero', 'error'); return; }
+
+  const model = document.getElementById('model-select').value;
+  const size = document.getElementById('size-select').value;
+  const [width, height] = size.split('x').map(Number);
+  const steps = parseInt(document.getElementById('steps').value);
+  const cfg = parseFloat(document.getElementById('cfg').value);
+  const negPrompt = document.getElementById('neg-prompt').value.trim();
+
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true; btn.textContent = 'Generando...';
+  setStatus(`⟳ Generando ${imageCount} imagen(es) con ${model}...`, 'info');
+
+  const grid = document.getElementById('images-grid');
+  grid.innerHTML = '';
+  for (let i = 0; i < imageCount; i++) {
+    const sk = document.createElement('div'); sk.className = 'skeleton'; grid.appendChild(sk);
+  }
+
+  const results = [];
+  for (let i = 0; i < imageCount; i++) {
+    try {
+      const body = { model, prompt, width, height, steps, cfg_scale: cfg, safe_filter: false };
+      if (negPrompt) body.negative_prompt = negPrompt;
+
+      const res = await fetch('https://api.venice.ai/api/v1/image/generate', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error?.message || `HTTP ${res.status}`);
       }
+
+      const data = await res.json();
+      const imgRaw = data.images?.[0] || data.data?.[0]?.b64_json || data.data?.[0]?.url || null;
+      if (!imgRaw) throw new Error('Sin imagen en respuesta');
+      results.push({ idx: i, data: imgRaw, isUrl: imgRaw.startsWith('http') });
+    } catch (e) {
+      results.push({ idx: i, error: e.message });
     }
+  }
 
-    function addMessage(text, isUser = false) {
-      const div = document.createElement('div');
-      div.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
-      div.innerHTML = `<div class="max-w-[80%] px-6 py-3 rounded-3xl ${isUser ? 'bg-pink-600' : 'bg-zinc-800'}">${text}</div>`;
-      document.getElementById('messages').appendChild(div);
-      document.getElementById('messages').scrollTop = 99999;
-    }
-
-    async function generarImagen() {
-      const input = document.getElementById('promptInput');
-      const userText = input.value.trim();
-      if (!userText) return;
-
-      addMessage(userText, true);
-      input.value = "";
-
-      const loadingId = 'load-' + Date.now();
-      document.getElementById('messages').innerHTML += `
-        <div id="${loadingId}" class="flex justify-start">
-          <div class="bg-zinc-800 px-6 py-3 rounded-3xl">Generando... ⏳</div>
+  grid.innerHTML = '';
+  let errors = 0;
+  results.forEach(r => {
+    if (r.error) {
+      errors++;
+      const card = document.createElement('div'); card.className = 'img-card';
+      card.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--accent2);font-size:12px">Error: ${r.error}</div>`;
+      grid.appendChild(card);
+    } else {
+      const src = r.isUrl ? r.data : `data:image/png;base64,${r.data}`;
+      const card = document.createElement('div'); card.className = 'img-card';
+      card.innerHTML = `
+        <img src="${src}" alt="Imagen ${r.idx+1}" loading="lazy">
+        <div class="img-actions">
+          <a href="${src}" download="venice-${Date.now()}-${r.idx}.png" class="btn-dl">⬇ Descargar</a>
+          <button class="btn-cp" onclick="copyImg('${src}')">⧉ Copiar</button>
         </div>`;
-
-      // Prompt optimizado
-      const fullPrompt = `fotorealista, ultra detallado, 8k, piel realista, ${userText}, hombre gay, escena explícita, detalle anatómico extremo, pene visible`;
-
-      try {
-        const res = await fetch("https://api.venice.ai/api/v1/image/generate", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${API_KEY}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            model: "flux-dev",           // ← Cambiado a modelo más estable
-            prompt: fullPrompt,
-            negative_prompt: "woman, female, child, blurry, deformed, low quality, text, watermark, clothes",
-            width: 1024,
-            height: 1024,
-            format: "webp",
-            hide_watermark: true,
-            nsfw: true
-          })
-        });
-
-        const data = await res.json();
-        document.getElementById(loadingId).remove();
-
-        if (res.ok && data.images && data.images[0]) {
-          const imgSrc = `data:image/webp;base64,${data.images[0]}`;
-          document.getElementById('messages').innerHTML += `
-            <div class="flex justify-start">
-              <div class="bg-zinc-800 p-3 rounded-3xl">
-                <img src="${imgSrc}" class="rounded-2xl max-w-full">
-              </div>
-            </div>`;
-        } else {
-          addMessage(`❌ Error: ${data.error || data.message || "Inténtalo de nuevo"}`, false);
-        }
-      } catch (e) {
-        document.getElementById(loadingId).remove();
-        addMessage("❌ Error de conexión. Revisa tu internet.", false);
-      }
+      grid.appendChild(card);
     }
-  </script>
+  });
+
+  btn.disabled = false; btn.textContent = 'Generar imágenes →';
+  if (errors > 0) setStatus(`⚠ ${errors} imagen(es) fallaron. Verifica tu API key o prueba otro modelo.`, 'error');
+  else setStatus(`✓ ${results.length} imagen(es) generadas correctamente con ${model}`, 'success');
+}
+
+async function copyImg(src) {
+  try {
+    const res = await fetch(src); const blob = await res.blob();
+    await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+  } catch { alert('No se pudo copiar en este navegador.'); }
+}
+</script>
 </body>
 </html>
