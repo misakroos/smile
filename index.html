@@ -7,25 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --surface2: #1a1a25;
-    --border: #2a2a3a;
-    --accent: #7c6dfa;
-    --accent2: #fa6d8a;
-    --text: #e8e8f0;
-    --muted: #6b6b88;
-    --success: #4ade80;
-    --warn: #f59e0b;
+    --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a25; --border: #2a2a3a;
+    --accent: #7c6dfa; --accent2: #fa6d8a; --text: #e8e8f0; --muted: #6b6b88;
+    --success: #4ade80; --warn: #f59e0b;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; min-height: 100vh; overflow-x: hidden; }
 
   /* LOGIN */
-  #login-screen {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    min-height: 100vh; background: radial-gradient(ellipse at 50% 0%, #1e1040 0%, var(--bg) 70%);
-  }
+  #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: radial-gradient(ellipse at 50% 0%, #1e1040 0%, var(--bg) 70%); }
   .login-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 48px 40px; width: 360px; box-shadow: 0 0 60px rgba(124,109,250,.15); }
   .login-logo { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; margin-bottom: 8px; }
   .login-sub { text-align: center; color: var(--muted); font-size: 12px; margin-bottom: 36px; }
@@ -33,36 +23,33 @@
   .field label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
   .field input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 14px; outline: none; transition: border-color .2s; }
   .field input:focus { border-color: var(--accent); }
-  .btn-login { width: 100%; padding: 13px; background: linear-gradient(135deg, var(--accent), #5b4de0); border: none; border-radius: 8px; color: #fff; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: opacity .2s, transform .1s; }
-  .btn-login:hover { opacity: .9; transform: translateY(-1px); }
+  .btn-login { width: 100%; padding: 13px; background: linear-gradient(135deg, var(--accent), #5b4de0); border: none; border-radius: 8px; color: #fff; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: opacity .2s; }
+  .btn-login:hover { opacity: .9; }
   .login-error { color: var(--accent2); font-size: 12px; margin-top: 10px; text-align: center; display: none; }
 
   /* APP */
   #app { display: none; min-height: 100vh; }
   .topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 28px; border-bottom: 1px solid var(--border); background: var(--surface); position: sticky; top: 0; z-index: 100; }
   .topbar-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .btn-logout { background: none; border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-family: 'DM Mono', monospace; transition: all .2s; }
-  .btn-logout:hover { border-color: var(--accent2); color: var(--accent2); }
-
+  .btn-sm { background: none; border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-family: 'DM Mono', monospace; transition: all .2s; }
+  .btn-sm:hover { border-color: var(--accent2); color: var(--accent2); }
   .layout { display: flex; height: calc(100vh - 53px); }
 
   /* SIDEBAR */
-  .sidebar { width: 300px; min-width: 300px; background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
-  .sidebar h3 { font-family: 'Syne', sans-serif; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-  .form-group label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; }
+  .sidebar { width: 300px; min-width: 300px; background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+  .sidebar h3 { font-family: 'Syne', sans-serif; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
   .form-group select, .form-group textarea { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 12px; padding: 9px 12px; outline: none; transition: border-color .2s; width: 100%; }
   .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); }
   .form-group textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+  .api-field input { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 12px; padding: 8px 12px; outline: none; width: 100%; }
+  .api-field input:focus { border-color: var(--accent); }
 
-  .model-badge { font-size: 9px; padding: 2px 6px; border-radius: 10px; margin-left: 4px; font-weight: 600; }
-  .badge-uncensored { background: rgba(250,109,138,.15); color: var(--accent2); }
-  .badge-private { background: rgba(124,109,250,.15); color: var(--accent); }
-  .badge-sota { background: rgba(245,158,11,.15); color: var(--warn); }
+  .model-info-box { font-size: 10px; color: var(--muted); padding: 6px 8px; background: var(--surface2); border-radius: 6px; border-left: 2px solid var(--accent); margin-top: 4px; min-height: 30px; }
 
   input[type=range] { -webkit-appearance: none; height: 4px; border-radius: 2px; background: var(--border); padding: 0; cursor: pointer; width: 100%; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; }
-  .range-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .range-row { display: flex; align-items: center; gap: 10px; }
   .range-val { font-size: 12px; color: var(--accent); min-width: 28px; text-align: right; }
 
   .count-pills { display: flex; gap: 8px; }
@@ -70,21 +57,20 @@
   .pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
   .pill:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
 
-  .api-field input { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 12px; padding: 8px 12px; outline: none; width: 100%; }
-  .api-field input:focus { border-color: var(--accent); }
-
-  .btn-generate { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; border-radius: 10px; color: #fff; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity .2s, transform .1s; }
-  .btn-generate:hover:not(:disabled) { opacity: .9; transform: translateY(-1px); }
+  .btn-generate { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; border-radius: 10px; color: #fff; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity .2s; }
+  .btn-generate:hover:not(:disabled) { opacity: .9; }
   .btn-generate:disabled { opacity: .5; cursor: not-allowed; }
   .btn-autoprompt { width: 100%; padding: 9px; background: var(--surface2); border: 1px solid var(--accent); border-radius: 8px; color: var(--accent); font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; transition: all .2s; }
   .btn-autoprompt:hover { background: var(--accent); color: #fff; }
+  .btn-reload { padding: 5px 10px; background: none; border: 1px solid var(--border); border-radius: 6px; color: var(--muted); font-size: 11px; font-family: 'DM Mono', monospace; cursor: pointer; transition: all .2s; }
+  .btn-reload:hover { border-color: var(--accent); color: var(--accent); }
 
   .divider { border: none; border-top: 1px solid var(--border); }
 
   /* MAIN */
   .main { flex: 1; overflow-y: auto; padding: 24px; }
   .main-header { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 4px; }
-  .main-sub { color: var(--muted); font-size: 12px; margin-bottom: 24px; }
+  .main-sub { color: var(--muted); font-size: 12px; margin-bottom: 20px; }
   .images-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
   .img-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; position: relative; transition: transform .2s, box-shadow .2s; }
   .img-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(124,109,250,.2); }
@@ -96,7 +82,7 @@
   .btn-cp { background: var(--surface2); color: var(--text); }
   .skeleton { background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 12px; aspect-ratio: 1; min-height: 260px; }
   @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-  .status-bar { margin-top: 16px; padding: 12px 16px; border-radius: 8px; font-size: 12px; display: none; }
+  .status-bar { margin-top: 12px; padding: 12px 16px; border-radius: 8px; font-size: 12px; display: none; }
   .status-bar.info { background: rgba(124,109,250,.1); border: 1px solid rgba(124,109,250,.3); color: var(--accent); display: block; }
   .status-bar.error { background: rgba(250,109,138,.1); border: 1px solid rgba(250,109,138,.3); color: var(--accent2); display: block; }
   .status-bar.success { background: rgba(74,222,128,.1); border: 1px solid rgba(74,222,128,.3); color: var(--success); display: block; }
@@ -108,9 +94,8 @@
   .qtag:hover { border-color: var(--accent); color: var(--accent); }
   ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-  /* Model info tooltip */
-  .model-info { font-size: 10px; color: var(--muted); margin-top: 4px; padding: 6px 8px; background: var(--surface2); border-radius: 6px; border-left: 2px solid var(--accent); display: none; }
-  #model-select:focus + .model-info { display: block; }
+  .model-count { font-size: 10px; color: var(--muted); margin-left: 6px; }
+  .loading-models { color: var(--muted); font-size: 11px; padding: 8px 0; }
 </style>
 </head>
 <body>
@@ -131,7 +116,7 @@
 <div id="app">
   <div class="topbar">
     <div class="topbar-logo">⬡ VENICE GEN</div>
-    <button class="btn-logout" onclick="doLogout()">Salir</button>
+    <button class="btn-sm" onclick="doLogout()">Salir</button>
   </div>
   <div class="layout">
 
@@ -140,47 +125,23 @@
 
       <div>
         <h3>API Key Venice</h3>
-        <div class="api-field"><input type="password" id="api-key" placeholder="vapi_..."></div>
+        <div class="api-field">
+          <input type="password" id="api-key" placeholder="vapi_..." oninput="onApiKeyChange()">
+        </div>
       </div>
 
       <hr class="divider">
 
       <div>
-        <h3>Modelo</h3>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <h3 style="margin-bottom:0">Modelo <span class="model-count" id="model-count"></span></h3>
+          <button class="btn-reload" onclick="loadModels()" title="Recargar modelos">↺ Recargar</button>
+        </div>
         <div class="form-group">
           <select id="model-select" onchange="updateModelInfo()">
-            <optgroup label="🌟 SOTA / High Quality">
-              <option value="grok-imagine-hq">Grok Imagine HQ (SOTA) — Privado</option>
-              <option value="flux-2-max">Flux 2 Max — Anon</option>
-              <option value="gpt-image-2">GPT Image 2 — Anon</option>
-              <option value="qwen-image-2">Qwen Image 2 Pro — Anon</option>
-            </optgroup>
-            <optgroup label="⚡ Rápidos / Generales">
-              <option value="grok-imagine">Grok Imagine — Privado</option>
-              <option value="nano-banana-2">Nano Banana 2 — Anon</option>
-              <option value="fluently-xl">Fluently XL — Rápido</option>
-              <option value="flux-dev">Flux Dev — Alta calidad</option>
-              <option value="venice-sd35">Venice SD 3.5</option>
-              <option value="hidream-i1-full">HiDream I1 Full</option>
-              <option value="qwen-image">Qwen Image</option>
-              <option value="seedream-v4-5">Seedream V4.5 — ByteDance</option>
-            </optgroup>
-            <optgroup label="🔓 Sin censura (Uncensored)">
-              <option value="flux-dev-uncensored">Flux Dev Uncensored</option>
-              <option value="lustify-v8">Lustify v8 — Sin censura · Privado</option>
-              <option value="lustify-sdxl">Lustify SDXL — Sin censura</option>
-              <option value="anime-wai">Anime (WAI) — Sin censura · Privado</option>
-              <option value="chroma">Chroma — Sin censura · Privado</option>
-              <option value="pony-realism">Pony Realism — Sin censura</option>
-            </optgroup>
-            <optgroup label="🎨 Artísticos / Especiales">
-              <option value="stable-diffusion-3.5">Stable Diffusion 3.5</option>
-              <option value="flux-realism">Flux Realism</option>
-              <option value="ideogram-v2">Ideogram v2</option>
-              <option value="z-image-turbo">Z-Image Turbo</option>
-            </optgroup>
+            <option value="">— Ingresa tu API key primero —</option>
           </select>
-          <div class="model-info" id="model-info-box"></div>
+          <div class="model-info-box" id="model-info-box">Ingresa tu API key y recarga los modelos</div>
         </div>
       </div>
 
@@ -209,12 +170,18 @@
       </div>
 
       <div>
-        <h3>Steps <span class="range-val" id="steps-val">30</span></h3>
+        <div class="range-row">
+          <h3>Steps</h3>
+          <span class="range-val" id="steps-val">30</span>
+        </div>
         <input type="range" id="steps" min="10" max="50" value="30" oninput="document.getElementById('steps-val').textContent=this.value">
       </div>
 
       <div>
-        <h3>CFG Scale <span class="range-val" id="cfg-val">7</span></h3>
+        <div class="range-row">
+          <h3>CFG Scale</h3>
+          <span class="range-val" id="cfg-val">7</span>
+        </div>
         <input type="range" id="cfg" min="1" max="20" value="7" step="0.5" oninput="document.getElementById('cfg-val').textContent=this.value">
       </div>
 
@@ -252,115 +219,183 @@
     <!-- MAIN -->
     <div class="main">
       <div class="main-header">Generador de Imágenes</div>
-      <div class="main-sub">Venice AI · 20+ modelos disponibles · Privado · Sin retención de datos</div>
+      <div class="main-sub">Venice AI · Modelos cargados desde la API · Privado · Sin retención de datos</div>
       <div id="status" class="status-bar"></div>
       <div id="images-grid" class="images-grid">
         <div class="empty-state">
           <div class="empty-icon">◈</div>
-          <p>Elige un modelo, escribe tu prompt y genera hasta 4 imágenes</p>
+          <p>Ingresa tu API key, carga los modelos y genera hasta 4 imágenes</p>
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
 <script>
-// AUTH
+// ── AUTH ──────────────────────────────────────────────
 function doLogin() {
-  const u = document.getElementById('login-user').value;
-  const p = document.getElementById('login-pass').value;
-  if (u === '4321' && p === '4321') {
+  if (document.getElementById('login-user').value === '4321' &&
+      document.getElementById('login-pass').value === '4321') {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
   } else {
     document.getElementById('login-err').style.display = 'block';
   }
 }
-document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key==='Enter') doLogin(); });
 function doLogout() { document.getElementById('login-screen').style.display='flex'; document.getElementById('app').style.display='none'; }
 
-// MODEL INFO
-const modelDesc = {
-  'grok-imagine-hq': '🌟 Mejor calidad. Grok Imagine en modo alta resolución. Privado en Venice.',
-  'flux-2-max': '⚡ Flux 2 Max — Excelente estética y adherencia al prompt.',
-  'gpt-image-2': '🤖 GPT Image 2 de OpenAI vía proxy anónimo de Venice.',
-  'qwen-image-2': '🎯 Qwen Image 2 Pro de Alibaba — gran detalle y colores.',
-  'grok-imagine': '⚡ Grok Imagine estándar — rápido y privado.',
-  'nano-banana-2': '🍌 Nano Banana 2 (Gemini Flash Image) — rápido y versátil.',
-  'fluently-xl': '💨 Más rápido. Buena calidad general. Ideal para pruebas.',
-  'flux-dev': '🎨 Alta calidad. Detalles finos. Algo más lento.',
-  'venice-sd35': '🖼 Venice SD 3.5 — Stable Diffusion adaptado por Venice.',
-  'hidream-i1-full': '🌈 HiDream I1 — colores vibrantes y composición creativa.',
-  'qwen-image': '🔷 Qwen Image — velocidad alta, buenos resultados generales.',
-  'flux-dev-uncensored': '🔓 Sin filtros. Versión uncensored de Flux Dev.',
-  'lustify-v8': '🔓 Lustify v8 — Sin censura, última versión. Privado.',
-  'lustify-sdxl': '🔓 Lustify SDXL — Sin censura, estilo artístico expresivo.',
-  'anime-wai': '🔓 Anime (WAI) — estilo anime, sin censura. Privado.',
-  'chroma': '🔓 Chroma — Sin censura, colores ricos y saturados. Privado.',
-  'pony-realism': '🔓 Pony Realism — fotorrealismo sin censura.',
-  'stable-diffusion-3.5': '🎭 SD 3.5 estándar — amplia compatibilidad de estilos.',
-  'flux-realism': '📷 Flux Realism — especializado en fotorrealismo.',
-  'ideogram-v2': '✍️ Ideogram v2 — excelente para texto dentro de imágenes.',
-  'z-image-turbo': '⚡ Z-Image Turbo (Alibaba) — muy rápido, buena calidad.',
-  'seedream-v4-5': '🌸 Seedream V4.5 (ByteDance) — generación y edición de alta calidad, excelente detalle y coherencia.'
-};
+// ── MODELS ────────────────────────────────────────────
+let allModels = [];       // raw data from API
+let modelSpecs = {};      // id -> spec
+
+let loadTimer = null;
+function onApiKeyChange() {
+  clearTimeout(loadTimer);
+  loadTimer = setTimeout(loadModels, 800); // auto-load after typing pause
+}
+
+async function loadModels() {
+  const apiKey = document.getElementById('api-key').value.trim();
+  if (!apiKey) return;
+
+  const sel = document.getElementById('model-select');
+  sel.innerHTML = '<option>⟳ Cargando modelos...</option>';
+  document.getElementById('model-info-box').textContent = 'Consultando Venice API...';
+  document.getElementById('model-count').textContent = '';
+
+  try {
+    const res = await fetch('https://api.venice.ai/api/v1/models?type=image', {
+      headers: { 'Authorization': `Bearer ${apiKey}` }
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    allModels = (data.data || []).filter(m => {
+      const t = m.model_spec?.type || m.type || '';
+      // Keep generation models, exclude upscale/inpaint/edit-only
+      const name = (m.model_spec?.name || m.id || '').toLowerCase();
+      return !name.includes('upscale') && !name.includes('edit') && !name.includes('inpaint');
+    });
+
+    populateSelect(allModels);
+    document.getElementById('model-count').textContent = `(${allModels.length} modelos)`;
+  } catch(e) {
+    sel.innerHTML = '<option value="">Error al cargar modelos</option>';
+    document.getElementById('model-info-box').textContent = `Error: ${e.message} — Verifica tu API key`;
+  }
+}
+
+function populateSelect(models) {
+  const sel = document.getElementById('model-select');
+  sel.innerHTML = '';
+
+  // Group: uncensored
+  const uncensored = models.filter(m => {
+    const n = (m.model_spec?.name || m.id || '').toLowerCase();
+    return n.includes('uncensor') || n.includes('lustify') || n.includes('anime') ||
+           n.includes('wai') || n.includes('chroma') || n.includes('pony');
+  });
+  // Group: rest
+  const general = models.filter(m => !uncensored.includes(m));
+
+  if (general.length > 0) {
+    const og = document.createElement('optgroup');
+    og.label = '✦ Modelos de imagen';
+    general.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.id;
+      const priv = m.model_spec?.privacy === 'private' ? ' · Privado' : '';
+      opt.textContent = `${m.model_spec?.name || m.id}${priv}`;
+      og.appendChild(opt);
+      modelSpecs[m.id] = m.model_spec;
+    });
+    sel.appendChild(og);
+  }
+
+  if (uncensored.length > 0) {
+    const og2 = document.createElement('optgroup');
+    og2.label = '🔓 Sin censura';
+    uncensored.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.id;
+      opt.textContent = `${m.model_spec?.name || m.id} · Sin censura`;
+      og2.appendChild(opt);
+      modelSpecs[m.id] = m.model_spec;
+    });
+    sel.appendChild(og2);
+  }
+
+  if (models.length === 0) {
+    sel.innerHTML = '<option value="">No se encontraron modelos de imagen</option>';
+  }
+
+  updateModelInfo();
+}
 
 function updateModelInfo() {
-  const m = document.getElementById('model-select').value;
+  const id = document.getElementById('model-select').value;
+  const spec = modelSpecs[id];
   const box = document.getElementById('model-info-box');
-  box.textContent = modelDesc[m] || '';
-  box.style.display = modelDesc[m] ? 'block' : 'none';
-}
-updateModelInfo();
+  if (!spec) { box.textContent = 'Selecciona un modelo'; return; }
 
-// COUNT
+  const parts = [];
+  if (spec.description) parts.push(spec.description);
+  if (spec.privacy) parts.push(`Privacidad: ${spec.privacy}`);
+  if (spec.pricing?.resolutions) {
+    const prices = Object.entries(spec.pricing.resolutions);
+    if (prices.length) parts.push(`Precio: $${prices[0][1].usd ?? '?'}/img`);
+  }
+  box.textContent = parts.join(' · ') || id;
+}
+
+// ── UI UTILS ─────────────────────────────────────────
 let imageCount = 1;
 function setCount(el) {
   document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
   imageCount = parseInt(el.dataset.n);
 }
-
-// UTILS
 function addTag(tag) {
   const el = document.getElementById('prompt');
   el.value = el.value.trim() ? el.value.trim() + ', ' + tag : tag;
 }
 function setStatus(msg, type) {
   const el = document.getElementById('status');
-  el.textContent = msg;
-  el.className = 'status-bar ' + type;
+  el.textContent = msg; el.className = 'status-bar ' + type;
 }
 
-// AUTO PROMPT
+// ── AUTO PROMPT ──────────────────────────────────────
 const autoPrompts = [
-  "A stunning mountain landscape at golden hour, dramatic clouds, photorealistic, 8k, cinematic lighting, ultra detailed",
+  "A stunning mountain landscape at golden hour, dramatic clouds, photorealistic, 8k, cinematic lighting",
   "Portrait of a mysterious figure in neon-lit rainy city alley, cyberpunk atmosphere, reflections, detailed",
   "Aerial view of misty forest at dawn, fog rolling through valleys, soft morning light, 8k photography",
-  "Close-up macro photograph of blooming flower with water droplets, bokeh background, sharp focus, studio lighting",
-  "Abstract geometric futuristic architecture, concrete and glass, dramatic shadows, editorial photography",
+  "Close-up macro photograph of blooming flower with water droplets, bokeh background, sharp focus",
+  "Abstract futuristic architecture, concrete and glass, dramatic shadows, editorial photography",
   "Ocean sunset with silhouette of lone surfer, golden pink sky, photorealistic, high contrast",
   "Dense tropical jungle with light shafts through canopy, lush greens, cinematic, hyperrealistic",
   "Minimalist still life: coffee cup and book on wooden table, warm window light, moody atmosphere",
   "Thunderstorm over vast desert, lightning strikes, dramatic clouds, epic scale, photorealistic",
-  "Ancient grand library interior, warm candlelight, floating dust motes, thousands of old books, mystical"
+  "Ancient grand library interior, warm candlelight, floating dust motes, thousands of old books"
 ];
 function autoPrompt() {
   document.getElementById('prompt').value = autoPrompts[Math.floor(Math.random() * autoPrompts.length)];
 }
 
-// GENERATE
+// ── GENERATE ─────────────────────────────────────────
 async function generate() {
   const apiKey = document.getElementById('api-key').value.trim();
   const prompt = document.getElementById('prompt').value.trim();
+  const model  = document.getElementById('model-select').value;
+
   if (!apiKey) { setStatus('⚠ Ingresa tu API key de Venice.ai', 'error'); return; }
+  if (!model)  { setStatus('⚠ Carga y selecciona un modelo primero', 'error'); return; }
   if (!prompt) { setStatus('⚠ Escribe un prompt primero', 'error'); return; }
 
-  const model = document.getElementById('model-select').value;
   const size = document.getElementById('size-select').value;
   const [width, height] = size.split('x').map(Number);
-  const steps = parseInt(document.getElementById('steps').value);
-  const cfg = parseFloat(document.getElementById('cfg').value);
+  const steps    = parseInt(document.getElementById('steps').value);
+  const cfg      = parseFloat(document.getElementById('cfg').value);
   const negPrompt = document.getElementById('neg-prompt').value.trim();
 
   const btn = document.getElementById('gen-btn');
@@ -386,15 +421,16 @@ async function generate() {
       });
 
       if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error?.message || `HTTP ${res.status}`);
+        let errMsg = `HTTP ${res.status}`;
+        try { const e = await res.json(); errMsg = e.error?.message || e.message || errMsg; } catch{}
+        throw new Error(errMsg);
       }
 
       const data = await res.json();
-      const imgRaw = data.images?.[0] || data.data?.[0]?.b64_json || data.data?.[0]?.url || null;
+      const imgRaw = data.images?.[0] || data.data?.[0]?.b64_json || data.data?.[0]?.url;
       if (!imgRaw) throw new Error('Sin imagen en respuesta');
-      results.push({ idx: i, data: imgRaw, isUrl: imgRaw.startsWith('http') });
-    } catch (e) {
+      results.push({ idx: i, data: imgRaw, isUrl: typeof imgRaw === 'string' && imgRaw.startsWith('http') });
+    } catch(e) {
       results.push({ idx: i, error: e.message });
     }
   }
@@ -405,7 +441,7 @@ async function generate() {
     if (r.error) {
       errors++;
       const card = document.createElement('div'); card.className = 'img-card';
-      card.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--accent2);font-size:12px">Error: ${r.error}</div>`;
+      card.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--accent2);font-size:12px">⚠ ${r.error}</div>`;
       grid.appendChild(card);
     } else {
       const src = r.isUrl ? r.data : `data:image/png;base64,${r.data}`;
@@ -421,13 +457,13 @@ async function generate() {
   });
 
   btn.disabled = false; btn.textContent = 'Generar imágenes →';
-  if (errors > 0) setStatus(`⚠ ${errors} imagen(es) fallaron. Verifica tu API key o prueba otro modelo.`, 'error');
-  else setStatus(`✓ ${results.length} imagen(es) generadas correctamente con ${model}`, 'success');
+  if (errors > 0) setStatus(`⚠ ${errors} imagen(es) fallaron. El modelo puede no soportar esos parámetros.`, 'error');
+  else setStatus(`✓ ${results.length} imagen(es) generadas con ${model}`, 'success');
 }
 
 async function copyImg(src) {
   try {
-    const res = await fetch(src); const blob = await res.blob();
+    const blob = await (await fetch(src)).blob();
     await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
   } catch { alert('No se pudo copiar en este navegador.'); }
 }
