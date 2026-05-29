@@ -7,112 +7,79 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { background: #0a0a0a; }
-    .login-container, .chat-container { max-width: 800px; margin: auto; }
+    .chat-container { max-width: 800px; margin: auto; height: 90vh; display: flex; flex-direction: column; }
   </style>
 </head>
 <body class="text-white min-h-screen flex items-center justify-center">
   
-  <!-- Pantalla de Login -->
-  <div id="loginScreen" class="login-container glass p-10 rounded-3xl border border-pink-500/30">
+  <!-- Login -->
+  <div id="loginScreen" class="max-w-md w-full p-10 rounded-3xl border border-pink-500/30 bg-zinc-950">
     <div class="text-center mb-8">
       <h1 class="text-4xl font-bold text-pink-500">Venice AI</h1>
       <p class="text-gray-400 mt-2">Acceso Privado</p>
     </div>
-    
-    <div class="space-y-5">
-      <div>
-        <label class="block text-sm mb-2">Usuario</label>
-        <input id="username" type="text" 
-               class="w-full bg-zinc-900 rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-pink-500"
-               placeholder="Usuario">
-      </div>
-      <div>
-        <label class="block text-sm mb-2">Contraseña</label>
-        <input id="password" type="password" 
-               class="w-full bg-zinc-900 rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-pink-500"
-               placeholder="Contraseña">
-      </div>
-      <button onclick="login()" 
-              class="w-full bg-pink-600 hover:bg-pink-700 py-4 rounded-2xl font-semibold text-lg transition">
-        Ingresar
-      </button>
-    </div>
+    <input id="username" type="text" placeholder="Usuario" class="w-full mb-4 bg-zinc-900 rounded-2xl px-6 py-4">
+    <input id="password" type="password" placeholder="Contraseña" class="w-full mb-6 bg-zinc-900 rounded-2xl px-6 py-4">
+    <button onclick="login()" class="w-full bg-pink-600 py-4 rounded-2xl font-semibold">Ingresar</button>
   </div>
 
-  <!-- Chat (oculto al inicio) -->
+  <!-- Chat -->
   <div id="chatScreen" class="chat-container hidden flex-col h-screen">
-    <div class="text-center py-4 border-b border-gray-800 bg-black/50">
+    <div class="text-center py-4 border-b border-gray-800">
       <h1 class="text-2xl font-semibold">Venice AI</h1>
     </div>
 
     <div id="messages" class="flex-1 overflow-y-auto p-6 space-y-6"></div>
 
-    <div class="p-4 border-t border-gray-800 bg-black/50">
+    <div class="p-4 border-t border-gray-800">
       <div class="flex gap-3">
-        <input 
-          id="promptInput" 
-          type="text" 
-          class="flex-1 bg-zinc-900 rounded-full px-6 py-4 focus:outline-none focus:ring-2 focus:ring-pink-500"
-          placeholder="Describe lo que quieres generar..."
-          onkeypress="if(event.key === 'Enter') generarImagen()">
-        <button 
-          onclick="generarImagen()"
-          class="bg-pink-600 hover:bg-pink-700 px-10 rounded-full font-medium transition">
-          Generar
-        </button>
+        <input id="promptInput" type="text" class="flex-1 bg-zinc-900 rounded-full px-6 py-4" 
+               placeholder="Describe lo que quieres generar..." onkeypress="if(event.key === 'Enter') generarImagen()">
+        <button onclick="generarImagen()" class="bg-pink-600 px-10 rounded-full font-medium">Generar</button>
       </div>
     </div>
   </div>
 
   <script>
     const API_KEY = "VENICE_ADMIN_KEY_4OHVqVKfs0hOmWYTWzlzM3g6NbJtNO72RY1L3viahS";
-    const CORRECT_PASSWORD = "43555938";
+    const CORRECT_PASS = "43555938";
 
     function login() {
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value.trim();
-
-      if (username === CORRECT_PASSWORD && password === CORRECT_PASSWORD) {
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
+      if (user === CORRECT_PASS && pass === CORRECT_PASS) {
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('chatScreen').classList.remove('hidden');
-        addMessage("Bienvenido. Puedes comenzar a generar imágenes.", false);
+        addMessage("Bienvenido. Describe lo que quieres generar.", false);
       } else {
         alert("Usuario o contraseña incorrectos");
       }
     }
 
     function addMessage(text, isUser = false) {
-      const messages = document.getElementById('messages');
       const div = document.createElement('div');
-      div.className = `message flex ${isUser ? 'justify-end' : 'justify-start'}`;
-      div.innerHTML = `
-        <div class="bubble max-w-[85%] ${isUser ? 'bg-pink-600 text-white' : 'bg-zinc-800 text-white'} rounded-3xl px-6 py-3">
-          ${text}
-        </div>
-      `;
-      messages.appendChild(div);
-      messages.scrollTop = messages.scrollHeight;
+      div.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+      div.innerHTML = `<div class="max-w-[80%] px-6 py-3 rounded-3xl ${isUser ? 'bg-pink-600' : 'bg-zinc-800'}">${text}</div>`;
+      document.getElementById('messages').appendChild(div);
+      document.getElementById('messages').scrollTop = 99999;
     }
 
     async function generarImagen() {
       const input = document.getElementById('promptInput');
       const userText = input.value.trim();
-      
       if (!userText) return;
 
       addMessage(userText, true);
       input.value = "";
 
-      const loadingId = 'loading-' + Date.now();
-      const messages = document.getElementById('messages');
-      messages.innerHTML += `
+      const loadingId = 'load-' + Date.now();
+      document.getElementById('messages').innerHTML += `
         <div id="${loadingId}" class="flex justify-start">
-          <div class="bubble bg-zinc-800 px-6 py-3">Generando imagen... ⏳</div>
+          <div class="bg-zinc-800 px-6 py-3 rounded-3xl">Generando... ⏳</div>
         </div>`;
-      messages.scrollTop = messages.scrollHeight;
 
-      const fullPrompt = "fotorealista, ultra detallado, 8k, piel realista, iluminación cinematográfica, " + 
-                        userText + ", hombre gay, escena explícita, detalle anatómico extremo";
+      // Prompt optimizado
+      const fullPrompt = `fotorealista, ultra detallado, 8k, piel realista, ${userText}, hombre gay, escena explícita, detalle anatómico extremo, pene visible`;
 
       try {
         const res = await fetch("https://api.venice.ai/api/v1/image/generate", {
@@ -122,7 +89,7 @@
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            model: "flux-uncensored",
+            model: "flux-dev",           // ← Cambiado a modelo más estable
             prompt: fullPrompt,
             negative_prompt: "woman, female, child, blurry, deformed, low quality, text, watermark, clothes",
             width: 1024,
@@ -138,21 +105,19 @@
 
         if (res.ok && data.images && data.images[0]) {
           const imgSrc = `data:image/webp;base64,${data.images[0]}`;
-          messages.innerHTML += `
+          document.getElementById('messages').innerHTML += `
             <div class="flex justify-start">
-              <div class="bubble bg-zinc-800 p-3 rounded-3xl">
+              <div class="bg-zinc-800 p-3 rounded-3xl">
                 <img src="${imgSrc}" class="rounded-2xl max-w-full">
               </div>
             </div>`;
         } else {
-          addMessage("❌ Error al generar la imagen.", false);
+          addMessage(`❌ Error: ${data.error || data.message || "Inténtalo de nuevo"}`, false);
         }
-      } catch (err) {
+      } catch (e) {
         document.getElementById(loadingId).remove();
-        addMessage("❌ Error de conexión.", false);
+        addMessage("❌ Error de conexión. Revisa tu internet.", false);
       }
-      
-      messages.scrollTop = messages.scrollHeight;
     }
   </script>
 </body>
