@@ -6,16 +6,12 @@
 <title>Venice Image Generator</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:#0a0a0f;--surface:#111118;--surface2:#1a1a25;--border:#2a2a3a;
-    --accent:#7c6dfa;--accent2:#fa6d8a;--text:#e8e8f0;--muted:#6b6b88;
-    --success:#4ade80;--warn:#f59e0b;
-  }
+  :root{--bg:#0a0a0f;--surface:#111118;--surface2:#1a1a25;--border:#2a2a3a;--accent:#7c6dfa;--accent2:#fa6d8a;--text:#e8e8f0;--muted:#6b6b88;--success:#4ade80;--warn:#f59e0b;}
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh;overflow-x:hidden;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh;}
 
   /* LOGIN */
-  #login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,#1e1040 0%,var(--bg) 70%);}
+  #login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,#1e1040,var(--bg) 70%);}
   .login-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:48px 40px;width:360px;box-shadow:0 0 60px rgba(124,109,250,.15);}
   .login-logo{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;margin-bottom:8px;}
   .login-sub{text-align:center;color:var(--muted);font-size:12px;margin-bottom:36px;}
@@ -23,12 +19,11 @@
   .field label{display:block;font-size:11px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;}
   .field input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-family:'DM Mono',monospace;font-size:14px;outline:none;transition:border-color .2s;}
   .field input:focus{border-color:var(--accent);}
-  .btn-login{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),#5b4de0);border:none;border-radius:8px;color:#fff;font-family:'Syne',sans-serif;font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;transition:opacity .2s;}
-  .btn-login:hover{opacity:.9;}
+  .btn-login{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),#5b4de0);border:none;border-radius:8px;color:#fff;font-family:'Syne',sans-serif;font-size:15px;font-weight:600;cursor:pointer;}
   .login-error{color:var(--accent2);font-size:12px;margin-top:10px;text-align:center;display:none;}
 
   /* APP */
-  #app{display:none;min-height:100vh;}
+  #app{display:none;}
   .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:100;}
   .topbar-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
   .btn-sm{background:none;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-family:'DM Mono',monospace;transition:all .2s;}
@@ -38,476 +33,369 @@
   /* SIDEBAR */
   .sidebar{width:300px;min-width:300px;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px;}
   .sidebar h3{font-family:'Syne',sans-serif;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;}
-  .form-group{display:flex;flex-direction:column;gap:5px;}
-  .form-group select,.form-group textarea{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:9px 12px;outline:none;transition:border-color .2s;width:100%;}
-  .form-group select:focus,.form-group textarea:focus{border-color:var(--accent);}
-  .form-group textarea{resize:vertical;min-height:80px;line-height:1.5;}
-  .api-field input{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:8px 12px;outline:none;width:100%;}
-  .api-field input:focus{border-color:var(--accent);}
-  .model-info-box{font-size:10px;color:var(--muted);padding:6px 8px;background:var(--surface2);border-radius:6px;border-left:2px solid var(--accent);margin-top:4px;min-height:28px;line-height:1.5;}
-
-  /* Dynamic sizing area */
-  #sizing-area{display:flex;flex-direction:column;gap:10px;}
-  .size-row{display:flex;flex-direction:column;gap:5px;}
-  .size-row label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;}
-  .size-row select{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:9px 12px;outline:none;width:100%;}
-  .size-row select:focus{border-color:var(--accent);}
-  .sizing-hint{font-size:10px;color:var(--warn);padding:5px 8px;background:rgba(245,158,11,.08);border-radius:6px;border-left:2px solid var(--warn);}
-
-  input[type=range]{-webkit-appearance:none;height:4px;border-radius:2px;background:var(--border);padding:0;cursor:pointer;width:100%;}
+  select,textarea,.inp{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:9px 12px;outline:none;transition:border-color .2s;width:100%;}
+  select:focus,textarea:focus,.inp:focus{border-color:var(--accent);}
+  textarea{resize:vertical;min-height:80px;line-height:1.5;}
+  .info-box{font-size:10px;color:var(--muted);padding:6px 8px;background:var(--surface2);border-radius:6px;border-left:2px solid var(--accent);margin-top:4px;min-height:26px;line-height:1.5;}
+  .hint{font-size:10px;color:var(--warn);padding:5px 8px;background:rgba(245,158,11,.08);border-radius:6px;border-left:2px solid var(--warn);}
+  input[type=range]{-webkit-appearance:none;height:4px;border-radius:2px;background:var(--border);cursor:pointer;width:100%;}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer;}
-  .range-row{display:flex;align-items:center;gap:10px;}
-  .range-val{font-size:12px;color:var(--accent);min-width:28px;text-align:right;}
-
-  .count-pills{display:flex;gap:8px;}
-  .pill{flex:1;text-align:center;padding:8px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:14px;font-weight:600;transition:all .2s;background:var(--surface2);font-family:'Syne',sans-serif;}
+  .rrow{display:flex;align-items:center;gap:10px;}
+  .rval{font-size:12px;color:var(--accent);min-width:30px;text-align:right;}
+  .pills{display:flex;gap:8px;}
+  .pill{flex:1;text-align:center;padding:8px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:14px;font-weight:600;background:var(--surface2);font-family:'Syne',sans-serif;transition:all .2s;}
   .pill.active{background:var(--accent);border-color:var(--accent);color:#fff;}
   .pill:hover:not(.active){border-color:var(--accent);color:var(--accent);}
+  .btn-gen{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;color:#fff;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;}
+  .btn-gen:disabled{opacity:.5;cursor:not-allowed;}
+  .btn-auto{width:100%;padding:9px;background:var(--surface2);border:1px solid var(--accent);border-radius:8px;color:var(--accent);font-family:'DM Mono',monospace;font-size:12px;cursor:pointer;}
+  .btn-auto:hover{background:var(--accent);color:#fff;}
+  .btn-rel{padding:5px 10px;background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;}
+  .btn-rel:hover{border-color:var(--accent);color:var(--accent);}
+  .hr{border:none;border-top:1px solid var(--border);}
+  .row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .lbl{font-family:'Syne',sans-serif;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;}
+  .mcnt{font-size:10px;color:var(--muted);}
 
-  .btn-generate{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;color:#fff;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s;}
-  .btn-generate:hover:not(:disabled){opacity:.9;}
-  .btn-generate:disabled{opacity:.5;cursor:not-allowed;}
-  .btn-autoprompt{width:100%;padding:9px;background:var(--surface2);border:1px solid var(--accent);border-radius:8px;color:var(--accent);font-family:'DM Mono',monospace;font-size:12px;cursor:pointer;transition:all .2s;}
-  .btn-autoprompt:hover{background:var(--accent);color:#fff;}
-  .btn-reload{padding:5px 10px;background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;transition:all .2s;}
-  .btn-reload:hover{border-color:var(--accent);color:var(--accent);}
-
-  .divider{border:none;border-top:1px solid var(--border);}
+  .qtags{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;}
+  .qtag{font-size:10px;padding:3px 8px;border-radius:20px;border:1px solid var(--border);cursor:pointer;background:var(--surface2);color:var(--muted);}
+  .qtag:hover{border-color:var(--accent);color:var(--accent);}
 
   /* MAIN */
   .main{flex:1;overflow-y:auto;padding:24px;}
-  .main-header{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:4px;}
-  .main-sub{color:var(--muted);font-size:12px;margin-bottom:20px;}
-  .images-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));}
-  .img-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:relative;transition:transform .2s,box-shadow .2s;}
-  .img-card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(124,109,250,.2);}
-  .img-card img{width:100%;display:block;}
-  .img-card .img-actions{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.85));padding:30px 12px 12px;display:flex;gap:8px;opacity:0;transition:opacity .2s;}
-  .img-card:hover .img-actions{opacity:1;}
-  .img-actions a,.img-actions button{flex:1;text-align:center;padding:7px;border-radius:6px;font-size:11px;cursor:pointer;font-family:'DM Mono',monospace;text-decoration:none;border:none;}
-  .btn-dl{background:var(--accent);color:#fff;}
-  .btn-cp{background:var(--surface2);color:var(--text);}
-  .skeleton{background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:12px;aspect-ratio:1;min-height:260px;}
-  @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-  .status-bar{margin-top:12px;padding:12px 16px;border-radius:8px;font-size:12px;display:none;}
-  .status-bar.info{background:rgba(124,109,250,.1);border:1px solid rgba(124,109,250,.3);color:var(--accent);display:block;}
-  .status-bar.error{background:rgba(250,109,138,.1);border:1px solid rgba(250,109,138,.3);color:var(--accent2);display:block;}
-  .status-bar.success{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:var(--success);display:block;}
-  .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;color:var(--muted);gap:12px;text-align:center;}
-  .empty-icon{font-size:48px;opacity:.3;}
-  .empty-state p{font-size:13px;max-width:280px;line-height:1.6;}
-  .quick-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;}
-  .qtag{font-size:10px;padding:3px 8px;border-radius:20px;border:1px solid var(--border);cursor:pointer;background:var(--surface2);color:var(--muted);transition:all .2s;}
-  .qtag:hover{border-color:var(--accent);color:var(--accent);}
-  ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
-  .model-count{font-size:10px;color:var(--muted);margin-left:6px;}
+  .main-h{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:4px;}
+  .main-s{color:var(--muted);font-size:12px;margin-bottom:20px;}
+  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:relative;transition:transform .2s,box-shadow .2s;}
+  .card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(124,109,250,.2);}
+  .card img{width:100%;display:block;}
+  .card-act{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.85));padding:30px 12px 12px;display:flex;gap:8px;opacity:0;transition:opacity .2s;}
+  .card:hover .card-act{opacity:1;}
+  .card-act a,.card-act button{flex:1;text-align:center;padding:7px;border-radius:6px;font-size:11px;cursor:pointer;font-family:'DM Mono',monospace;text-decoration:none;border:none;}
+  .bdl{background:var(--accent);color:#fff;}
+  .bcp{background:var(--surface2);color:var(--text);}
+  .skel{background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:200% 100%;animation:sh 1.4s infinite;border-radius:12px;aspect-ratio:1;min-height:260px;}
+  @keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  .status{margin-top:12px;padding:12px 16px;border-radius:8px;font-size:12px;display:none;}
+  .status.info{background:rgba(124,109,250,.1);border:1px solid rgba(124,109,250,.3);color:var(--accent);display:block;}
+  .status.error{background:rgba(250,109,138,.1);border:1px solid rgba(250,109,138,.3);color:var(--accent2);display:block;}
+  .status.ok{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:var(--success);display:block;}
+  .debug{font-size:10px;color:var(--muted);margin-top:8px;padding:8px;background:var(--surface);border-radius:6px;border:1px solid var(--border);white-space:pre-wrap;word-break:break-all;display:none;}
+  .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;color:var(--muted);gap:12px;text-align:center;}
+  .empty-ico{font-size:48px;opacity:.3;}
+  .empty p{font-size:13px;max-width:280px;line-height:1.6;}
+  ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">⬡ VENICE GEN</div>
     <div class="login-sub">Private · AI Image Generator</div>
-    <div class="field"><label>Usuario</label><input type="text" id="login-user" placeholder="usuario" autocomplete="off"></div>
-    <div class="field"><label>Contraseña</label><input type="password" id="login-pass" placeholder="••••••••"></div>
-    <button class="btn-login" onclick="doLogin()">Entrar</button>
-    <div class="login-error" id="login-err">Credenciales incorrectas</div>
+    <div class="field"><label>Usuario</label><input type="text" id="lu" placeholder="usuario" autocomplete="off"></div>
+    <div class="field"><label>Contraseña</label><input type="password" id="lp" placeholder="••••••••"></div>
+    <button class="btn-login" onclick="login()">Entrar</button>
+    <div class="login-error" id="lerr">Credenciales incorrectas</div>
   </div>
 </div>
 
-<!-- APP -->
 <div id="app">
   <div class="topbar">
     <div class="topbar-logo">⬡ VENICE GEN</div>
-    <button class="btn-sm" onclick="doLogout()">Salir</button>
+    <button class="btn-sm" onclick="logout()">Salir</button>
   </div>
   <div class="layout">
     <div class="sidebar">
 
       <div>
-        <h3>API Key Venice</h3>
-        <div class="api-field">
-          <input type="password" id="api-key" placeholder="vapi_..." oninput="scheduleLoad()">
-        </div>
+        <div class="lbl" style="margin-bottom:6px">API Key Venice</div>
+        <input class="inp" type="password" id="apikey" placeholder="vapi_..." oninput="schedLoad()">
       </div>
 
-      <hr class="divider">
+      <hr class="hr">
 
       <div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-          <h3 style="margin-bottom:0">Modelo <span class="model-count" id="model-count"></span></h3>
-          <button class="btn-reload" onclick="loadModels()">↺ Recargar</button>
+        <div class="row">
+          <span class="lbl">Modelo <span class="mcnt" id="mcnt"></span></span>
+          <button class="btn-rel" onclick="loadModels()">↺ Recargar</button>
         </div>
-        <div class="form-group">
-          <select id="model-select" onchange="onModelChange()">
-            <option value="">— Ingresa tu API key —</option>
-          </select>
-          <div class="model-info-box" id="model-info-box">Ingresa tu API key para cargar los modelos</div>
-        </div>
+        <select id="msel" onchange="onModel()">
+          <option value="">— Ingresa API key —</option>
+        </select>
+        <div class="info-box" id="minfo">Ingresa tu API key para cargar los modelos disponibles</div>
       </div>
 
-      <hr class="divider">
+      <hr class="hr">
 
-      <!-- Dynamic sizing — populated by onModelChange() -->
-      <div id="sizing-area">
-        <div class="sizing-hint">Selecciona un modelo para ver las opciones de tamaño</div>
+      <div id="sizing-ui">
+        <div class="hint">Selecciona un modelo para ver opciones de tamaño</div>
       </div>
 
-      <hr class="divider">
+      <hr class="hr">
 
       <div>
-        <h3>Cantidad de imágenes</h3>
-        <div class="count-pills">
-          <div class="pill active" data-n="1" onclick="setCount(this)">1</div>
-          <div class="pill" data-n="2" onclick="setCount(this)">2</div>
-          <div class="pill" data-n="3" onclick="setCount(this)">3</div>
-          <div class="pill" data-n="4" onclick="setCount(this)">4</div>
+        <div class="lbl" style="margin-bottom:8px">Cantidad de imágenes</div>
+        <div class="pills">
+          <div class="pill active" data-n="1" onclick="setN(this)">1</div>
+          <div class="pill" data-n="2" onclick="setN(this)">2</div>
+          <div class="pill" data-n="3" onclick="setN(this)">3</div>
+          <div class="pill" data-n="4" onclick="setN(this)">4</div>
         </div>
       </div>
 
-      <!-- Steps & CFG — hidden for models that don't support them -->
-      <div id="steps-section">
-        <div class="range-row">
-          <h3>Steps</h3><span class="range-val" id="steps-val">30</span>
-        </div>
-        <input type="range" id="steps" min="10" max="50" value="30" oninput="document.getElementById('steps-val').textContent=this.value">
+      <div id="steps-ui">
+        <div class="rrow"><span class="lbl">Steps</span><span class="rval" id="sv">30</span></div>
+        <input type="range" id="steps" min="10" max="50" value="30" oninput="sv.textContent=this.value">
+      </div>
+      <div id="cfg-ui">
+        <div class="rrow"><span class="lbl">CFG Scale</span><span class="rval" id="cv">7</span></div>
+        <input type="range" id="cfg" min="1" max="20" value="7" step="0.5" oninput="cv.textContent=this.value">
       </div>
 
-      <div id="cfg-section">
-        <div class="range-row">
-          <h3>CFG Scale</h3><span class="range-val" id="cfg-val">7</span>
-        </div>
-        <input type="range" id="cfg" min="1" max="20" value="7" step="0.5" oninput="document.getElementById('cfg-val').textContent=this.value">
-      </div>
-
-      <hr class="divider">
+      <hr class="hr">
 
       <div>
-        <h3>Prompt</h3>
-        <div class="form-group">
-          <textarea id="prompt" rows="5" placeholder="Describe la imagen que quieres generar..."></textarea>
-        </div>
-        <div class="quick-tags">
-          <span class="qtag" onclick="addTag('photorealistic')">photorealistic</span>
-          <span class="qtag" onclick="addTag('8k resolution')">8k</span>
-          <span class="qtag" onclick="addTag('cinematic lighting')">cinematic</span>
-          <span class="qtag" onclick="addTag('detailed')">detailed</span>
-          <span class="qtag" onclick="addTag('dramatic shadows')">shadows</span>
-          <span class="qtag" onclick="addTag('sharp focus')">sharp focus</span>
-          <span class="qtag" onclick="addTag('hyperrealistic')">hyperreal</span>
-          <span class="qtag" onclick="addTag('studio lighting')">studio</span>
+        <div class="lbl" style="margin-bottom:6px">Prompt</div>
+        <textarea id="prompt" rows="5" placeholder="Describe la imagen..."></textarea>
+        <div class="qtags">
+          <span class="qtag" onclick="tag('photorealistic')">photorealistic</span>
+          <span class="qtag" onclick="tag('8k resolution')">8k</span>
+          <span class="qtag" onclick="tag('cinematic lighting')">cinematic</span>
+          <span class="qtag" onclick="tag('detailed')">detailed</span>
+          <span class="qtag" onclick="tag('hyperrealistic')">hyperreal</span>
+          <span class="qtag" onclick="tag('studio lighting')">studio</span>
         </div>
       </div>
 
       <div>
-        <h3>Negative Prompt</h3>
-        <div class="form-group">
-          <textarea id="neg-prompt" rows="3">blurry, low quality, deformed, ugly, watermark, text</textarea>
-        </div>
+        <div class="lbl" style="margin-bottom:6px">Negative Prompt</div>
+        <textarea id="neg" rows="3">blurry, low quality, deformed, ugly, watermark, text</textarea>
       </div>
 
-      <button class="btn-autoprompt" onclick="autoPrompt()">✦ Generar prompt automático</button>
-      <button class="btn-generate" id="gen-btn" onclick="generate()">Generar imágenes →</button>
+      <button class="btn-auto" onclick="rndPrompt()">✦ Prompt automático</button>
+      <button class="btn-gen" id="gbtn" onclick="gen()">Generar imágenes →</button>
 
     </div>
 
-    <!-- MAIN -->
     <div class="main">
-      <div class="main-header">Generador de Imágenes</div>
-      <div class="main-sub">Venice AI · Parámetros adaptados automáticamente por modelo · Privado</div>
-      <div id="status" class="status-bar"></div>
-      <div id="images-grid" class="images-grid">
-        <div class="empty-state">
-          <div class="empty-icon">◈</div>
-          <p>Ingresa tu API key, selecciona un modelo y genera hasta 4 imágenes</p>
-        </div>
+      <div class="main-h">Generador de Imágenes</div>
+      <div class="main-s">Venice AI · Privado · Sin retención de datos</div>
+      <div id="status" class="status"></div>
+      <div id="debug" class="debug"></div>
+      <div id="grid" class="grid">
+        <div class="empty"><div class="empty-ico">◈</div><p>Ingresa tu API key, selecciona un modelo y genera hasta 4 imágenes</p></div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-// ── AUTH ─────────────────────────────────────────────
-function doLogin(){
-  if(document.getElementById('login-user').value==='4321'&&document.getElementById('login-pass').value==='4321'){
+// AUTH
+function login(){
+  if(lu.value==='4321'&&lp.value==='4321'){
     document.getElementById('login-screen').style.display='none';
     document.getElementById('app').style.display='block';
-  } else { document.getElementById('login-err').style.display='block'; }
+  } else { lerr.style.display='block'; }
 }
-document.getElementById('login-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-function doLogout(){document.getElementById('login-screen').style.display='flex';document.getElementById('app').style.display='none';}
+lp.addEventListener('keydown',e=>{ if(e.key==='Enter') login(); });
+function logout(){ document.getElementById('login-screen').style.display='flex'; document.getElementById('app').style.display='none'; }
 
-// ── MODEL STORE ───────────────────────────────────────
-let modelSpecs = {}; // id -> model_spec from API
-
-let loadTimer = null;
-function scheduleLoad(){ clearTimeout(loadTimer); loadTimer = setTimeout(loadModels, 700); }
+// MODELS
+let specs={}, lt=null;
+function schedLoad(){ clearTimeout(lt); lt=setTimeout(loadModels,700); }
 
 async function loadModels(){
-  const apiKey = document.getElementById('api-key').value.trim();
-  if(!apiKey) return;
-  const sel = document.getElementById('model-select');
-  sel.innerHTML = '<option>⟳ Cargando...</option>';
-  document.getElementById('model-count').textContent='';
-  document.getElementById('model-info-box').textContent='Consultando API...';
+  const k=apikey.value.trim(); if(!k) return;
+  msel.innerHTML='<option>⟳ Cargando...</option>';
+  mcnt.textContent=''; minfo.textContent='Consultando Venice API...';
 
-  try {
-    const res = await fetch('https://api.venice.ai/api/v1/models?type=image',{
-      headers:{'Authorization':`Bearer ${apiKey}`}
+  try{
+    const r=await fetch('https://api.venice.ai/api/v1/models?type=image',{headers:{'Authorization':'Bearer '+k}});
+    if(!r.ok){ const e=await r.json().catch(()=>{}); throw new Error((e?.error?.message||'HTTP '+r.status)); }
+    const d=await r.json();
+
+    specs={};
+    const models=(d.data||[]).filter(m=>{
+      const id=(m.id||'').toLowerCase(), nm=(m.model_spec?.name||'').toLowerCase();
+      return !id.includes('-edit')&&!id.includes('upscal')&&!id.includes('inpaint')&&
+             !nm.includes(' edit')&&!nm.includes('upscal')&&!nm.includes('inpaint');
     });
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
+    models.forEach(m=>{ specs[m.id]=m.model_spec||{}; });
 
-    // Filter generation-only models (exclude edit/upscale)
-    const models = (data.data||[]).filter(m=>{
-      const id = (m.id||'').toLowerCase();
-      const name = (m.model_spec?.name||'').toLowerCase();
-      return !id.includes('edit')&&!id.includes('upscal')&&!id.includes('inpaint')&&
-             !name.includes('edit')&&!name.includes('upscal')&&!name.includes('inpaint')&&
-             (m.model_spec?.type==='image'||!m.model_spec?.type);
-    });
+    const isUnc=m=>{const n=(m.model_spec?.name||m.id).toLowerCase(); return n.includes('uncensor')||n.includes('lustify')||n.includes('wai')||n.includes('chroma')||n.includes('pony');};
+    const gen=models.filter(m=>!isUnc(m)), unc=models.filter(isUnc);
 
-    modelSpecs = {};
-    models.forEach(m=>{ modelSpecs[m.id]=m.model_spec||{}; });
+    msel.innerHTML='';
+    if(gen.length){ const og=document.createElement('optgroup'); og.label='✦ Modelos'; gen.forEach(m=>appendOpt(og,m)); msel.appendChild(og); }
+    if(unc.length){ const og=document.createElement('optgroup'); og.label='🔓 Sin censura'; unc.forEach(m=>appendOpt(og,m,true)); msel.appendChild(og); }
+    if(!models.length) msel.innerHTML='<option value="">Sin modelos disponibles</option>';
 
-    // Sort: uncensored at bottom
-    const isUncensored = m => {
-      const n=(m.model_spec?.name||m.id).toLowerCase();
-      return n.includes('uncensor')||n.includes('lustify')||n.includes('anime')||
-             n.includes('wai')||n.includes('chroma')||n.includes('pony');
-    };
-    const general  = models.filter(m=>!isUncensored(m));
-    const uncensored = models.filter(m=>isUncensored(m));
+    mcnt.textContent='('+models.length+')';
+    onModel();
+  }catch(e){ msel.innerHTML='<option value="">Error al cargar</option>'; minfo.textContent='Error: '+e.message; }
+}
 
-    sel.innerHTML='';
-    if(general.length){
-      const og=document.createElement('optgroup'); og.label='✦ Modelos de imagen';
-      general.forEach(m=>{ const o=document.createElement('option'); o.value=m.id; o.textContent=m.model_spec?.name||m.id; og.appendChild(o); });
-      sel.appendChild(og);
-    }
-    if(uncensored.length){
-      const og=document.createElement('optgroup'); og.label='🔓 Sin censura';
-      uncensored.forEach(m=>{ const o=document.createElement('option'); o.value=m.id; o.textContent=(m.model_spec?.name||m.id)+' · Sin censura'; og.appendChild(o); });
-      sel.appendChild(og);
-    }
-    if(!models.length) sel.innerHTML='<option value="">Sin modelos de imagen</option>';
+function appendOpt(og,m,unc){
+  const o=document.createElement('option');
+  o.value=m.id;
+  o.textContent=(m.model_spec?.name||m.id)+(unc?' · 🔓':'');
+  og.appendChild(o);
+}
 
-    document.getElementById('model-count').textContent=`(${models.length})`;
-    onModelChange();
-  } catch(e){
-    sel.innerHTML='<option value="">Error cargando modelos</option>';
-    document.getElementById('model-info-box').textContent=`Error: ${e.message}`;
+// Detect sizing mode from constraints
+function sizingMode(spec){
+  const c=spec?.constraints||{};
+  // Resolution tier: has supportedResolutions array OR quality pricing
+  if(c.supportedResolutions?.length || spec?.pricing?.quality) return 'res';
+  // Has aspectRatios → aspect_ratio only
+  if(c.aspectRatios?.length || c.supportedAspectRatios?.length) return 'ar';
+  // Has widthMultiple or widthMin → pixel
+  if(c.widthMultiple||c.widthMin||c.heightMin) return 'px';
+  // Fallback by model name heuristics
+  const nm=(spec?.name||'').toLowerCase();
+  if(nm.match(/nano.banana|gpt.image|grok.imagine|seedream|ideogram|kling/)) return 'res';
+  if(nm.match(/qwen.image.2|flux.2|chroma|hidream|z.image|flux.realism|flux.dev/)) return 'ar';
+  return 'px';
+}
+
+function onModel(){
+  const id=msel.value, spec=specs[id]||{};
+  // info
+  const parts=[]; if(spec.description) parts.push(spec.description); if(spec.privacy) parts.push('Privacidad: '+spec.privacy);
+  minfo.textContent=parts.join(' · ')||id||'Selecciona un modelo';
+  renderSizing(spec);
+}
+
+const AR_OPTS=['1:1','16:9','9:16','4:3','3:4','3:2','2:3','21:9'];
+const RES_OPTS=['1K','2K','4K'];
+const PX_OPTS=[['1024x1024','1024×1024 Cuadrado'],['1024x1536','1024×1536 Vertical'],['1536x1024','1536×1024 Horizontal'],['768x1344','768×1344 Portrait'],['896x1152','896×1152 Portrait M'],['512x512','512×512 Rápido']];
+
+function renderSizing(spec){
+  const mode=sizingMode(spec);
+  const ui=document.getElementById('sizing-ui');
+  if(mode==='px'){
+    ui.innerHTML='<div class="lbl" style="margin-bottom:6px">Tamaño</div><select id="spx">'+PX_OPTS.map(([v,l])=>`<option value="${v}">${l}</option>`).join('')+'</select>';
+    show('steps-ui',true); show('cfg-ui',true);
+  } else if(mode==='ar'){
+    ui.innerHTML='<div class="lbl" style="margin-bottom:6px">Proporción</div><select id="sar">'+AR_OPTS.map(v=>`<option value="${v}">${v}</option>`).join('')+'</select>';
+    show('steps-ui',true); show('cfg-ui',true);
+  } else { // res
+    ui.innerHTML=`
+      <div class="lbl" style="margin-bottom:6px">Proporción</div>
+      <select id="sar">`+AR_OPTS.map(v=>`<option value="${v}">${v}</option>`).join('')+`</select>
+      <div class="lbl" style="margin-top:10px;margin-bottom:6px">Resolución</div>
+      <select id="sres">`+RES_OPTS.map(v=>`<option value="${v}">${v}</option>`).join('')+`</select>`;
+    show('steps-ui',false); show('cfg-ui',false);
   }
 }
 
-// ── DETECT SIZING TYPE ────────────────────────────────
-// Returns: 'pixel' | 'aspect_ratio' | 'resolution_tier'
-function getSizingType(spec){
-  const constraints = spec?.constraints||{};
-  if(constraints.supportedResolutions || spec?.pricing?.quality) return 'resolution_tier';
-  if(constraints.aspectRatios || constraints.supportedAspectRatios) return 'aspect_ratio';
-  // fallback: check name
-  const name=(spec?.name||'').toLowerCase();
-  if(name.includes('nano-banana')||name.includes('gpt-image')||name.includes('grok-imagine')||
-     name.includes('seedream')||name.includes('ideogram')) return 'resolution_tier';
-  if(name.includes('qwen-image-2')||name.includes('flux-2')||name.includes('chroma')||
-     name.includes('hidream')||name.includes('z-image')) return 'aspect_ratio';
-  return 'pixel';
-}
+function show(id,v){ document.getElementById(id).style.display=v?'block':'none'; }
 
-function onModelChange(){
-  const id = document.getElementById('model-select').value;
-  const spec = modelSpecs[id]||{};
+// Build request body based on sizing mode
+function buildBody(id,prompt,neg,n,steps,cfg){
+  const spec=specs[id]||{};
+  const mode=sizingMode(spec);
+  const body={model:id, prompt, safe_filter:false, safe_mode:false, variants:n};
+  if(neg) body.negative_prompt=neg;
 
-  // Info box
-  const box = document.getElementById('model-info-box');
-  const parts=[];
-  if(spec.description) parts.push(spec.description);
-  if(spec.privacy) parts.push('Privacidad: '+spec.privacy);
-  box.textContent = parts.join(' · ')||id||'Selecciona un modelo';
-
-  // Build sizing UI
-  renderSizingUI(spec);
-}
-
-function renderSizingUI(spec){
-  const area = document.getElementById('sizing-area');
-  const sizingType = getSizingType(spec);
-  area.innerHTML='';
-
-  if(sizingType==='pixel'){
-    area.innerHTML=`
-      <div class="size-row"><label>Tamaño</label>
-        <select id="size-pixel">
-          <option value="1024x1024">1024 × 1024 — Cuadrado</option>
-          <option value="1024x1536">1024 × 1536 — Vertical</option>
-          <option value="1536x1024">1536 × 1024 — Horizontal</option>
-          <option value="768x1344">768 × 1344 — Portrait</option>
-          <option value="896x1152">896 × 1152 — Portrait M</option>
-          <option value="512x512">512 × 512 — Rápido</option>
-        </select>
-      </div>`;
-  } else if(sizingType==='aspect_ratio'){
-    area.innerHTML=`
-      <div class="size-row"><label>Proporción</label>
-        <select id="size-aspect">
-          <option value="1:1">1:1 — Cuadrado</option>
-          <option value="16:9">16:9 — Panorámico</option>
-          <option value="9:16">9:16 — Vertical/Story</option>
-          <option value="4:3">4:3 — Clásico</option>
-          <option value="3:4">3:4 — Portrait</option>
-          <option value="3:2">3:2 — Foto</option>
-          <option value="2:3">2:3 — Portrait foto</option>
-          <option value="21:9">21:9 — Ultra panorámico</option>
-        </select>
-      </div>`;
-  } else { // resolution_tier
-    area.innerHTML=`
-      <div class="size-row"><label>Proporción</label>
-        <select id="size-aspect">
-          <option value="1:1">1:1 — Cuadrado</option>
-          <option value="16:9">16:9 — Panorámico</option>
-          <option value="9:16">9:16 — Vertical/Story</option>
-          <option value="4:3">4:3 — Clásico</option>
-          <option value="3:4">3:4 — Portrait</option>
-          <option value="3:2">3:2 — Foto</option>
-          <option value="2:3">2:3 — Portrait foto</option>
-        </select>
-      </div>
-      <div class="size-row"><label>Resolución</label>
-        <select id="size-res">
-          <option value="1K">1K — Estándar</option>
-          <option value="2K">2K — Alta</option>
-          <option value="4K">4K — Ultra (más lento)</option>
-        </select>
-      </div>`;
-  }
-}
-
-// ── BUILD REQUEST BODY ────────────────────────────────
-function buildBody(model, prompt, negPrompt, imageCount, steps, cfg){
-  const spec = modelSpecs[model]||{};
-  const sizingType = getSizingType(spec);
-  const body = { model, prompt, safe_filter:false, safe_mode:false };
-  if(negPrompt) body.negative_prompt = negPrompt;
-
-  if(sizingType==='pixel'){
-    const sel=document.getElementById('size-pixel');
-    if(sel){ const [w,h]=(sel.value||'1024x1024').split('x').map(Number); body.width=w; body.height=h; }
+  if(mode==='px'){
+    const v=(document.getElementById('spx')?.value||'1024x1024').split('x').map(Number);
+    body.width=v[0]; body.height=v[1];
     body.steps=steps; body.cfg_scale=cfg;
-  } else if(sizingType==='aspect_ratio'){
-    const sel=document.getElementById('size-aspect');
-    body.aspect_ratio=(sel?.value)||'1:1';
+  } else if(mode==='ar'){
+    body.aspect_ratio=document.getElementById('sar')?.value||'1:1';
     body.steps=steps; body.cfg_scale=cfg;
-  } else { // resolution_tier
-    const asel=document.getElementById('size-aspect');
-    const rsel=document.getElementById('size-res');
-    body.aspect_ratio=(asel?.value)||'1:1';
-    body.resolution=(rsel?.value)||'1K';
-    // Don't send steps/cfg for these models — they ignore or reject them
+  } else {
+    body.aspect_ratio=document.getElementById('sar')?.value||'1:1';
+    body.resolution=document.getElementById('sres')?.value||'1K';
   }
-
-  // variants = number of images (only when not return_binary)
-  body.variants = imageCount;
-
   return body;
 }
 
-// ── UI UTILS ─────────────────────────────────────────
-let imageCount=1;
-function setCount(el){ document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); imageCount=parseInt(el.dataset.n); }
-function addTag(tag){ const el=document.getElementById('prompt'); el.value=el.value.trim()?el.value.trim()+', '+tag:tag; }
-function setStatus(msg,type){ const el=document.getElementById('status'); el.textContent=msg; el.className='status-bar '+type; }
+// UI
+let imgN=1;
+function setN(el){ document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); imgN=+el.dataset.n; }
+function tag(t){ const el=document.getElementById('prompt'); el.value=el.value.trim()?el.value.trim()+', '+t:t; }
+function setStatus(m,t){ status.textContent=m; status.className='status '+t; }
 
-const autoPrompts=[
+const PROMPTS=[
   "A stunning mountain landscape at golden hour, dramatic clouds, photorealistic, 8k, cinematic lighting",
-  "Portrait of a mysterious figure in neon-lit rainy city alley, cyberpunk atmosphere, reflections, detailed",
-  "Aerial view of misty forest at dawn, fog rolling through valleys, soft morning light, 8k photography",
-  "Close-up macro photograph of blooming flower with water droplets, bokeh background, sharp focus",
+  "Portrait of mysterious figure in neon-lit rainy city alley, cyberpunk, reflections, hyperrealistic",
+  "Aerial view of misty forest at dawn, fog rolling through valleys, soft morning light, 8k",
+  "Macro photograph of blooming flower with water droplets, bokeh background, sharp focus, studio lighting",
   "Abstract futuristic architecture, concrete and glass, dramatic shadows, editorial photography",
-  "Ocean sunset with silhouette of lone surfer, golden pink sky, photorealistic, high contrast",
+  "Ocean sunset silhouette of lone surfer, golden pink sky, photorealistic, high contrast",
   "Dense tropical jungle with light shafts through canopy, lush greens, cinematic, hyperrealistic",
-  "Minimalist still life: coffee cup and book on wooden table, warm window light, moody atmosphere",
-  "Thunderstorm over vast desert, lightning strikes, dramatic clouds, epic scale, photorealistic",
-  "Ancient grand library interior, warm candlelight, floating dust motes, thousands of old books"
+  "Minimalist still life: coffee cup and book on wooden table, warm window light, moody",
+  "Thunderstorm over vast desert, lightning strikes, epic scale, photorealistic",
+  "Ancient grand library interior, warm candlelight, floating dust motes, mystical atmosphere"
 ];
-function autoPrompt(){ document.getElementById('prompt').value=autoPrompts[Math.floor(Math.random()*autoPrompts.length)]; }
+function rndPrompt(){ document.getElementById('prompt').value=PROMPTS[Math.floor(Math.random()*PROMPTS.length)]; }
 
-// ── GENERATE ─────────────────────────────────────────
-async function generate(){
-  const apiKey=document.getElementById('api-key').value.trim();
-  const prompt=document.getElementById('prompt').value.trim();
-  const model=document.getElementById('model-select').value;
+// GENERATE
+async function gen(){
+  const k=apikey.value.trim(), p=document.getElementById('prompt').value.trim(), id=msel.value;
+  if(!k){setStatus('⚠ Ingresa tu API key','error');return;}
+  if(!id){setStatus('⚠ Selecciona un modelo','error');return;}
+  if(!p){setStatus('⚠ Escribe un prompt','error');return;}
 
-  if(!apiKey){setStatus('⚠ Ingresa tu API key','error');return;}
-  if(!model){setStatus('⚠ Carga y selecciona un modelo','error');return;}
-  if(!prompt){setStatus('⚠ Escribe un prompt','error');return;}
+  const steps=+document.getElementById('steps').value, cfg=+document.getElementById('cfg').value;
+  const neg=document.getElementById('neg').value.trim();
+  const body=buildBody(id,p,neg,imgN,steps,cfg);
 
-  const steps=parseInt(document.getElementById('steps').value);
-  const cfg=parseFloat(document.getElementById('cfg').value);
-  const negPrompt=document.getElementById('neg-prompt').value.trim();
+  gbtn.disabled=true; gbtn.textContent='Generando...';
+  setStatus('⟳ Generando con '+id+'...','info');
+  document.getElementById('debug').style.display='none';
 
-  const btn=document.getElementById('gen-btn');
-  btn.disabled=true; btn.textContent='Generando...';
-  setStatus(`⟳ Generando con ${model}...`,'info');
+  // Show body in debug
+  const dbg=document.getElementById('debug');
+  dbg.textContent='→ Request body:\n'+JSON.stringify(body,null,2);
+  dbg.style.display='block';
 
-  const grid=document.getElementById('images-grid');
+  const grid=document.getElementById('grid');
   grid.innerHTML='';
-  for(let i=0;i<imageCount;i++){ const sk=document.createElement('div'); sk.className='skeleton'; grid.appendChild(sk); }
+  for(let i=0;i<imgN;i++){ const s=document.createElement('div'); s.className='skel'; grid.appendChild(s); }
 
-  try {
-    const body = buildBody(model, prompt, negPrompt, imageCount, steps, cfg);
-
-    const res = await fetch('https://api.venice.ai/api/v1/image/generate',{
-      method:'POST',
-      headers:{'Authorization':`Bearer ${apiKey}`,'Content-Type':'application/json'},
-      body:JSON.stringify(body)
+  try{
+    const res=await fetch('https://api.venice.ai/api/v1/image/generate',{
+      method:'POST', headers:{'Authorization':'Bearer '+k,'Content-Type':'application/json'}, body:JSON.stringify(body)
     });
+    const raw=await res.text();
+    dbg.textContent+= '\n\n← HTTP '+res.status+'\n'+raw.substring(0,1000);
 
     if(!res.ok){
-      let errMsg=`HTTP ${res.status}`;
-      try{ const e=await res.json(); errMsg=e.error?.message||e.message||errMsg; }catch{}
-      throw new Error(errMsg);
+      let em='HTTP '+res.status;
+      try{ const e=JSON.parse(raw); em=(e.error?.message||e.message||em); }catch{}
+      throw new Error(em);
     }
 
-    const data=await res.json();
-    // Response: data.images = array of base64 strings (one per variant)
-    const imgs = data.images||[];
+    const data=JSON.parse(raw);
+    const imgs=data.images||[];
+    if(!imgs.length) throw new Error('Sin imágenes en respuesta');
 
     grid.innerHTML='';
-    if(!imgs.length){ throw new Error('Sin imágenes en la respuesta'); }
-
-    imgs.forEach((imgRaw,i)=>{
-      const isUrl = typeof imgRaw==='string'&&imgRaw.startsWith('http');
-      const src = isUrl ? imgRaw : `data:image/png;base64,${imgRaw}`;
-      const card=document.createElement('div'); card.className='img-card';
-      card.innerHTML=`
-        <img src="${src}" alt="Imagen ${i+1}" loading="lazy">
-        <div class="img-actions">
-          <a href="${src}" download="venice-${Date.now()}-${i}.png" class="btn-dl">⬇ Descargar</a>
-          <button class="btn-cp" onclick="copyImg(this,'${src}')">⧉ Copiar</button>
-        </div>`;
-      grid.appendChild(card);
+    imgs.forEach((raw64,i)=>{
+      const isUrl=typeof raw64==='string'&&raw64.startsWith('http');
+      const src=isUrl?raw64:'data:image/png;base64,'+raw64;
+      const c=document.createElement('div'); c.className='card';
+      c.innerHTML=`<img src="${src}" loading="lazy"><div class="card-act">
+        <a href="${src}" download="venice-${Date.now()}-${i}.png" class="bdl">⬇ Descargar</a>
+        <button class="bcp" onclick="cpImg(this,'${src}')">⧉ Copiar</button></div>`;
+      grid.appendChild(c);
     });
-
-    setStatus(`✓ ${imgs.length} imagen(es) generadas con ${model}`,'success');
-  } catch(e){
-    grid.innerHTML=`<div class="empty-state"><div class="empty-icon">⚠</div><p style="color:var(--accent2)">${e.message}</p></div>`;
-    setStatus(`⚠ Error: ${e.message}`,'error');
+    setStatus('✓ '+imgs.length+' imagen(es) generadas con '+id,'ok');
+    dbg.style.display='none';
+  }catch(e){
+    grid.innerHTML='<div class="empty"><div class="empty-ico">⚠</div><p style="color:var(--accent2)">'+e.message+'</p></div>';
+    setStatus('⚠ '+e.message,'error');
   }
-
-  btn.disabled=false; btn.textContent='Generar imágenes →';
+  gbtn.disabled=false; gbtn.textContent='Generar imágenes →';
 }
 
-async function copyImg(btn, src){
-  try{
-    const blob=await(await fetch(src)).blob();
-    await navigator.clipboard.write([new ClipboardItem({[blob.type]:blob})]);
-    btn.textContent='✓ Copiado';
-    setTimeout(()=>btn.textContent='⧉ Copiar',2000);
-  }catch{ alert('No se pudo copiar en este navegador.'); }
+async function cpImg(btn,src){
+  try{ const b=await(await fetch(src)).blob(); await navigator.clipboard.write([new ClipboardItem({[b.type]:b})]); btn.textContent='✓'; setTimeout(()=>btn.textContent='⧉ Copiar',2000); }
+  catch{ alert('No se pudo copiar.'); }
 }
 </script>
 </body>
